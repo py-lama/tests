@@ -100,7 +100,7 @@ run-pybox: create-logs-dir
 # Run PyLLM service
 run-pyllm: create-logs-dir
 	@echo "$(BLUE)Starting PyLLM on $(HOST):$(PYLLM_PORT)...$(NC)"
-	@cd $(ROOT_DIR)/pyllm && . venv/bin/activate && PORT=$(PYLLM_PORT) HOST=$(HOST) python -m pyllm.api.server & echo $$! > $(LOG_DIR)/pyllm.pid
+	@cd $(ROOT_DIR)/pyllm && PORT=$(PYLLM_PORT) HOST=$(HOST) poetry run pyllm & echo $$! > $(LOG_DIR)/pyllm.pid
 	@echo "$(GREEN)PyLLM started with PID $$(cat $(LOG_DIR)/pyllm.pid)$(NC)"
 	@echo "$(GREEN)PyLLM available at http://$(HOST):$(PYLLM_PORT)$(NC)"
 
