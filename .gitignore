@@ -1,3 +1,10 @@
+.idea
+.old
+.todo.txt
+old
+cleanup_old_repo.sh
+poetry.lock
+pytest.ini.bak
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
