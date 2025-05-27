@@ -1,0 +1,43 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create logs directory
+RUN mkdir -p /app/logs
+
+# Copy the loglama directory first
+COPY loglama /app/loglama
+
+# Install Poetry
+RUN pip install --no-cache-dir poetry
+
+# Configure poetry to not create a virtual environment
+RUN poetry config virtualenvs.create false
+
+# Install dependencies and the package
+WORKDIR /app/loglama
+RUN poetry install --no-interaction --no-ansi
+WORKDIR /app
+
+# Expose the web interface port
+EXPOSE 5001
+
+# Create a simple startup script
+RUN echo '#!/bin/bash' > /app/start.sh \
+    && echo 'echo "Starting LogLama web interface..."' >> /app/start.sh \
+    && echo 'exec python -m loglama.cli.main web --host 0.0.0.0 --port 5001 --db /app/logs/loglama.db' >> /app/start.sh
+RUN chmod +x /app/start.sh
+
+# Add health check that uses the root endpoint
+HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:5001/ || exit 1
+
+# Command to run the web interface
+CMD ["/app/start.sh"]

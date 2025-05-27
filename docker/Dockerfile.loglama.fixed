@@ -1,0 +1,40 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create logs directory
+RUN mkdir -p /app/logs
+
+# Copy the loglama directory first
+COPY loglama /app/loglama
+
+# Install Poetry
+RUN pip install --no-cache-dir poetry
+
+# Configure poetry to not create a virtual environment
+RUN poetry config virtualenvs.create false
+
+# Install dependencies
+WORKDIR /app/loglama
+RUN poetry install --no-interaction --no-ansi
+WORKDIR /app
+
+# Copy the startup script
+COPY docker/start-loglama.sh /app/start-loglama.sh
+RUN chmod +x /app/start-loglama.sh
+
+# Expose the web interface port
+EXPOSE 5001
+
+# Add health check
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:5001/api/health || exit 1
+
+# Command to run both web interface and collector
+CMD ["/app/start-loglama.sh"]

@@ -25,7 +25,7 @@ BLUE := "\033[0;34m"
 RED := "\033[0;31m"
 NC := "\033[0m" # No Color
 
-.PHONY: all setup clean test lint format run-all run-loglama run-collector run-pybox run-pyllm run-pylama run-apilama run-shellama run-weblama stop-all stop status help
+.PHONY: all setup clean test lint format run-all run-loglama run-collector run-pybox run-pyllm run-pylama run-apilama run-shellama run-weblama stop-all status help
 
 # Default target
 all: help
@@ -164,9 +164,6 @@ stop-all:
 		fi \
 	done
 	@echo "$(GREEN)All services stopped$(NC)"
-
-# Alias for stop-all
-stop: stop-all
 
 # Check status of all services
 status:

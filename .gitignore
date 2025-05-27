@@ -1,3 +1,9 @@
+logs
+.log
+.pid
+.db
+.sqlite
+.env
 .idea
 .old
 .todo.txt

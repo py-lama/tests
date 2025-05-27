@@ -1,0 +1,34 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create logs directory
+RUN mkdir -p /app/logs
+
+# Copy the entire service directory first
+COPY pybox /app/pybox
+
+# Install dependencies
+RUN pip install --no-cache-dir -r pybox/requirements.txt
+RUN pip install --no-cache-dir fastapi uvicorn
+
+# Install the package in development mode
+WORKDIR /app/pybox
+RUN pip install -e .
+WORKDIR /app
+
+# Expose the API port
+EXPOSE 8000
+
+# Add health check
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+# Command to run the API server
+CMD ["python", "-m", "pybox.api", "--host", "0.0.0.0", "--port", "8000"]

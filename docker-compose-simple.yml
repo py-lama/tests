@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  # LogLama - Logging service (starts first)
+  loglama:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.loglama.simple
+    ports:
+      - "6001:5001"
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=DEBUG
+    networks:
+      - lama-network
+    restart: unless-stopped
+
+networks:
+  lama-network:
+    driver: bridge

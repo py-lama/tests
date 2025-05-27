@@ -1,0 +1,198 @@
+version: '3.8'
+
+services:
+  # LogLama - Logging service (starts first)
+  loglama:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.loglama
+    ports:
+      - "6001:5001"
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=DEBUG
+    networks:
+      - lama-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  # Note: LogLama Collector is now part of the LogLama service
+
+  # Core services
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - lama-network
+    depends_on:
+      loglama:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # PyBox - Python Sandbox service
+  pybox:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.pybox
+    ports:
+      - "9000:8000"
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=DEBUG
+      - LOGLAMA_URL=http://loglama:5001
+    depends_on:
+      loglama:
+        condition: service_healthy
+    networks:
+      - lama-network
+    restart: unless-stopped
+
+  # PyLLM - LLM Operations service
+  pyllm:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.pyllm
+    ports:
+      - "9001:8001"
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=DEBUG
+      - LOGLAMA_URL=http://loglama:5001
+      - OLLAMA_API_URL=http://ollama:11434
+    depends_on:
+      loglama:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    networks:
+      - lama-network
+    restart: unless-stopped
+
+  # SheLLama - Shell Operations service
+  shellama:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.shellama
+    ports:
+      - "9002:8002"
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/data  # Shared data directory for file operations
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=DEBUG
+      - LOGLAMA_URL=http://loglama:5001
+    depends_on:
+      loglama:
+        condition: service_healthy
+    networks:
+      - lama-network
+    restart: unless-stopped
+
+  # PyLama - Central orchestration service
+  pylama:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.pylama
+    ports:
+      - "9003:8002"
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=DEBUG
+      - LOGLAMA_URL=http://loglama:5001
+      - PYBOX_API_URL=http://pybox:8000
+      - PYLLM_API_URL=http://pyllm:8001
+      - SHELLAMA_API_URL=http://shellama:8002
+      - OLLAMA_API_URL=http://ollama:11434
+    depends_on:
+      loglama:
+        condition: service_healthy
+      pybox:
+        condition: service_started
+      pyllm:
+        condition: service_started
+      shellama:
+        condition: service_started
+    networks:
+      - lama-network
+    restart: unless-stopped
+
+  # API Gateway
+  apilama:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.apilama
+    ports:
+      - "9080:8080"
+    volumes:
+      - ./logs:/app/logs
+      - ./weblama/markdown:/app/markdown
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=DEBUG
+      - LOGLAMA_URL=http://loglama:5001
+      - PYBOX_API_URL=http://pybox:8000
+      - PYLLM_API_URL=http://pyllm:8001
+      - PYLAMA_API_URL=http://pylama:8003
+      - SHELLAMA_API_URL=http://shellama:8002
+      - MARKDOWN_DIR=/app/markdown
+    depends_on:
+      loglama:
+        condition: service_healthy
+      pybox:
+        condition: service_started
+      pyllm:
+        condition: service_started
+      shellama:
+        condition: service_started
+      pylama:
+        condition: service_started
+    networks:
+      - lama-network
+    restart: unless-stopped
+
+  # Frontend (Static Web Interface)
+  weblama:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.weblama
+    ports:
+      - "9084:80"
+    volumes:
+      - ./weblama/markdown:/usr/share/nginx/html/markdown
+      - ./logs:/logs
+    environment:
+      - API_URL=http://apilama:8080
+      - LOGLAMA_URL=http://loglama:5001
+      - COLLECT=1
+    depends_on:
+      loglama:
+        condition: service_healthy
+      apilama:
+        condition: service_started
+    networks:
+      - lama-network
+    restart: unless-stopped
+
+networks:
+  lama-network:
+    driver: bridge
+
+volumes:
+  ollama_data:

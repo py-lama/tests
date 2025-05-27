@@ -1,0 +1,37 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create logs directory
+RUN mkdir -p /app/logs
+
+# Copy the entire service directory first
+COPY pylama /app/pylama
+
+# Copy the __main__.py file to the PyLama package
+COPY docker/pylama_main_fix.py /app/pylama/pylama/__main__.py
+
+# Install dependencies
+RUN pip install --no-cache-dir -r pylama/requirements.txt
+RUN pip install --no-cache-dir fastapi uvicorn requests python-dotenv
+
+# Install the package in development mode
+WORKDIR /app/pylama
+RUN pip install -e .
+WORKDIR /app
+
+# Expose the API port
+EXPOSE 8002
+
+# Add health check
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8002/health || exit 1
+
+# Command to run the API server
+CMD ["python", "-m", "pylama.api", "--host", "0.0.0.0", "--port", "8002"]

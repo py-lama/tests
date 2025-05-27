@@ -1,0 +1,7 @@
+start  docker-compose up  in /home/tom/github/py-lama   and fix issues
+
+przed startem we wszystkich projektach python uzyj: pip install -e .
+
+
+projekt pylama powinien pozwalac na uruchomienie calego ekosystemu, wszystkich projektow jako uslugi, tak jak w /home/tom/github/py-lama/docker-compose.yml
+np.: pylama --weblama --apilama --pylama --pybox --pyllm --shellama

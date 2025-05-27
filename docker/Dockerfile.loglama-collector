@@ -1,0 +1,33 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create logs directory
+RUN mkdir -p /app/logs
+
+# Install Poetry
+RUN pip install --no-cache-dir poetry
+
+# Copy pyproject.toml and poetry.lock for dependency installation
+COPY loglama/pyproject.toml loglama/poetry.lock* ./
+
+# Configure poetry to not create a virtual environment
+RUN poetry config virtualenvs.create false
+
+# Install dependencies
+RUN poetry install --no-interaction --no-ansi --no-root
+
+# Copy the package files
+COPY loglama /app/loglama
+
+# Install the package in development mode
+WORKDIR /app
+RUN pip install -e .
+
+# Command to run the log collector daemon
+CMD ["python", "-m", "loglama.cli.main", "collect-daemon"]
