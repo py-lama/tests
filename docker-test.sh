@@ -39,7 +39,7 @@ start_services() {
   
   echo -e "\n${GREEN}All services started successfully!${NC}"
   echo -e "${GREEN}LogLama web interface: http://localhost:6001${NC}"
-  echo -e "${GREEN}PyBox API: http://localhost:9000${NC}"
+  echo -e "${GREEN}BEXY API: http://localhost:9000${NC}"
   echo -e "${GREEN}PyLLM API: http://localhost:9001${NC}"
   echo -e "${GREEN}SheLLama API: http://localhost:9002${NC}"
   echo -e "${GREEN}PyLama API: http://localhost:9003${NC}"
@@ -62,7 +62,7 @@ show_status() {
   
   echo -e "\n${BLUE}Service URLs:${NC}"
   echo -e "${GREEN}LogLama: http://localhost:5001${NC}"
-  echo -e "${GREEN}PyBox: http://localhost:8000${NC}"
+  echo -e "${GREEN}BEXY: http://localhost:8000${NC}"
   echo -e "${GREEN}PyLLM: http://localhost:8001${NC}"
   echo -e "${GREEN}SheLLama: http://localhost:8002${NC}"
   echo -e "${GREEN}PyLama: http://localhost:8003${NC}"
@@ -122,10 +122,10 @@ run_tests() {
     echo -e "${GREEN}LogLama is healthy!${NC}" || \
     echo -e "${RED}LogLama health check failed!${NC}"
   
-  echo -e "${YELLOW}Testing PyBox...${NC}"
+  echo -e "${YELLOW}Testing BEXY...${NC}"
   curl -s http://localhost:8000/health | grep -q "healthy" && \
-    echo -e "${GREEN}PyBox is healthy!${NC}" || \
-    echo -e "${RED}PyBox health check failed!${NC}"
+    echo -e "${GREEN}BEXY is healthy!${NC}" || \
+    echo -e "${RED}BEXY health check failed!${NC}"
   
   echo -e "${YELLOW}Testing PyLLM...${NC}"
   curl -s http://localhost:8001/health | grep -q "healthy" && \

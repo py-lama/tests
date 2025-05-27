@@ -23,14 +23,14 @@ def main():
     project_root = Path(__file__).parent.absolute()
     print(f"Project root: {project_root}")
     
-    # Install pybox package
-    pybox_dir = project_root / "pybox"
-    if not pybox_dir.exists():
-        print(f"Error: {pybox_dir} does not exist")
+    # Install bexy package
+    bexy_dir = project_root / "bexy"
+    if not bexy_dir.exists():
+        print(f"Error: {bexy_dir} does not exist")
         return False
     
-    print("\n=== Installing pybox package ===")
-    if not run_command([sys.executable, "-m", "pip", "install", "-e", "."], cwd=pybox_dir):
+    print("\n=== Installing bexy package ===")
+    if not run_command([sys.executable, "-m", "pip", "install", "-e", "."], cwd=bexy_dir):
         return False
     
     # Install pyllm package

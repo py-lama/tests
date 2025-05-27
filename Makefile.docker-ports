@@ -7,7 +7,7 @@ docker-ports:
 	@echo "$(GREEN)WebLama\t\t80\t\t9081\t\thttp://localhost:9081$(NC)"
 	@echo "$(GREEN)APILama\t\t8080\t\t9080\t\thttp://localhost:9080$(NC)"
 	@echo "$(GREEN)PyLama\t\t8003\t\t9003\t\thttp://localhost:9003$(NC)"
-	@echo "$(GREEN)PyBox\t\t8000\t\t9000\t\thttp://localhost:9000$(NC)"
+	@echo "$(GREEN)BEXY\t\t8000\t\t9000\t\thttp://localhost:9000$(NC)"
 	@echo "$(GREEN)PyLLM\t\t8001\t\t9001\t\thttp://localhost:9001$(NC)"
 	@echo "$(GREEN)SheLLama\t8002\t\t9002\t\thttp://localhost:9002$(NC)"
 	@echo "$(GREEN)Ollama\t\t11434\t\t11435\t\thttp://localhost:11435$(NC)"

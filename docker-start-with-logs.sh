@@ -57,7 +57,7 @@ show_status() {
   
   echo -e "\n${BLUE}Service URLs:${NC}"
   echo -e "${GREEN}LogLama: http://localhost:5001${NC}"
-  echo -e "${GREEN}PyBox: http://localhost:9000${NC}"
+  echo -e "${GREEN}BEXY: http://localhost:9000${NC}"
   echo -e "${GREEN}PyLLM: http://localhost:9001${NC}"
   echo -e "${GREEN}SheLLama: http://localhost:9002${NC}"
   echo -e "${GREEN}PyLama: http://localhost:9003${NC}"

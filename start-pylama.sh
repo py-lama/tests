@@ -7,7 +7,7 @@
 PYLAMA_PORT=7003
 APILAMA_PORT=7080
 SHELLAMA_PORT=7002
-PYBOX_PORT=7000
+BEXY_PORT=7000
 PYLLM_PORT=7001
 WEBLAMA_PORT=6081
 
@@ -145,7 +145,7 @@ stop_service() {
 # Function to stop all services
 stop_all() {
   echo -e "${BLUE}Stopping all services...${NC}"
-  stop_service "pybox"
+  stop_service "bexy"
   stop_service "pyllm"
   stop_service "shellama"
   stop_service "apilama"
@@ -189,7 +189,7 @@ case "$1" in
     
     # Install dependencies for all services first
     echo -e "${BLUE}Installing dependencies for all services...${NC}"
-    for service in pybox pyllm shellama apilama pylama; do
+    for service in bexy pyllm shellama apilama pylama; do
       install_dependencies "$service" "$service"
     done
     
@@ -201,13 +201,13 @@ case "$1" in
     
     # Start all services in the correct order
     
-    # PyBox
-    if check_venv "pybox"; then
-      venv_path=$(get_venv_path "pybox")
-      start_service "pybox" "pybox" "$PYBOX_PORT" ". $venv_path/bin/activate && python -m pybox.app --port $PYBOX_PORT --host $HOST"
+    # BEXY
+    if check_venv "bexy"; then
+      venv_path=$(get_venv_path "bexy")
+      start_service "bexy" "bexy" "$BEXY_PORT" ". $venv_path/bin/activate && python -m bexy.app --port $BEXY_PORT --host $HOST"
     else
-      echo -e "${YELLOW}Warning: PyBox virtual environment not found. Using system Python.${NC}"
-      start_service "pybox" "pybox" "$PYBOX_PORT" "python -m pybox.app --port $PYBOX_PORT --host $HOST 2>/dev/null || python3 -m pybox.app --port $PYBOX_PORT --host $HOST 2>/dev/null || echo 'Failed to start PyBox'"
+      echo -e "${YELLOW}Warning: BEXY virtual environment not found. Using system Python.${NC}"
+      start_service "bexy" "bexy" "$BEXY_PORT" "python -m bexy.app --port $BEXY_PORT --host $HOST 2>/dev/null || python3 -m bexy.app --port $BEXY_PORT --host $HOST 2>/dev/null || echo 'Failed to start BEXY'"
     fi
     sleep 2
     
@@ -284,7 +284,7 @@ case "$1" in
     
   status)
     echo -e "${BLUE}PyLama Ecosystem Status:${NC}"
-    for service in pybox pyllm shellama apilama pylama weblama; do
+    for service in bexy pyllm shellama apilama pylama weblama; do
       if [ -f "logs/$service.pid" ]; then
         pid=$(cat "logs/$service.pid")
         if kill -0 "$pid" 2>/dev/null; then
@@ -308,7 +308,7 @@ case "$1" in
     service=$2
     if [ -z "$service" ]; then
       echo -e "${YELLOW}Usage: $0 logs [service]${NC}"
-      echo -e "${BLUE}Available services: pybox, pyllm, shellama, apilama, pylama, weblama${NC}"
+      echo -e "${BLUE}Available services: bexy, pyllm, shellama, apilama, pylama, weblama${NC}"
       exit 1
     fi
     
@@ -348,7 +348,7 @@ case "$1" in
     echo -e "${BLUE}Setting up PyLama ecosystem...${NC}"
     
     # Create virtual environments for each service
-    for service in pybox pyllm shellama apilama pylama; do
+    for service in bexy pyllm shellama apilama pylama; do
       echo -e "${BLUE}Setting up $service...${NC}"
       if [ -d "$service" ]; then
         cd "$service" || continue

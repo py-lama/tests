@@ -17,13 +17,13 @@ docker-compose up -d --build
 echo "Waiting for services to start..."
 sleep 10
 
-# Test PyBox API
-echo "\nTesting PyBox API..."
-PYBOX_HEALTH=$(curl -s http://localhost:8000/health)
-if [[ $PYBOX_HEALTH == *"healthy"* ]]; then
-  echo "✅ PyBox API is running"
+# Test BEXY API
+echo "\nTesting BEXY API..."
+BEXY_HEALTH=$(curl -s http://localhost:8000/health)
+if [[ $BEXY_HEALTH == *"healthy"* ]]; then
+  echo "✅ BEXY API is running"
 else
-  echo "❌ PyBox API is not responding correctly"
+  echo "❌ BEXY API is not responding correctly"
 fi
 
 # Test PyLLM API

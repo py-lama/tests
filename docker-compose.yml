@@ -25,13 +25,13 @@ services:
       - PYTHONUNBUFFERED=1
       - PORT=8003
       - HOST=0.0.0.0
-      - PYBOX_API_URL=http://pybox:8000
+      - BEXY_API_URL=http://bexy:8000
       - PYLLM_API_URL=http://pyllm:8001
       - SHELLAMA_API_URL=http://apilama:8080/api/shellama
       - OLLAMA_API_URL=http://ollama:11434
     depends_on:
       - ollama
-      - pybox
+      - bexy
       - pyllm
       - apilama
     networks:
@@ -52,13 +52,13 @@ services:
       - PYTHONUNBUFFERED=1
       - PORT=8080
       - HOST=0.0.0.0
-      - PYBOX_API_URL=http://pybox:8000
+      - BEXY_API_URL=http://bexy:8000
       - PYLLM_API_URL=http://pyllm:8001
       - PYLAMA_API_URL=http://pylama:8003
       - SHELLAMA_API_URL=http://shellama:8002
       - MARKDOWN_DIR=/app/markdown
     depends_on:
-      - pybox
+      - bexy
       - pyllm
       - shellama
     networks:
@@ -84,14 +84,14 @@ services:
     restart: unless-stopped
 
   # Execution services
-  pybox:
+  bexy:
     build:
-      context: ./pybox
+      context: ./bexy
       dockerfile: Dockerfile
     ports:
       - "9000:8000"
     volumes:
-      - ./pybox:/app
+      - ./bexy:/app
     environment:
       - PYTHONUNBUFFERED=1
       - PORT=8000

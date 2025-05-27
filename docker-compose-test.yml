@@ -39,11 +39,11 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  # PyBox - Python Sandbox service
-  pybox:
+  # BEXY - Python Sandbox service
+  bexy:
     build:
       context: .
-      dockerfile: docker/Dockerfile.pybox
+      dockerfile: docker/Dockerfile.bexy
     ports:
       - "9000:8000"
     volumes:
@@ -116,14 +116,14 @@ services:
       - PYTHONUNBUFFERED=1
       - LOG_LEVEL=DEBUG
       - LOGLAMA_URL=http://loglama:5001
-      - PYBOX_API_URL=http://pybox:8000
+      - BEXY_API_URL=http://bexy:8000
       - PYLLM_API_URL=http://pyllm:8001
       - SHELLAMA_API_URL=http://shellama:8002
       - OLLAMA_API_URL=http://ollama:11434
     depends_on:
       loglama:
         condition: service_healthy
-      pybox:
+      bexy:
         condition: service_started
       pyllm:
         condition: service_started
@@ -147,7 +147,7 @@ services:
       - PYTHONUNBUFFERED=1
       - LOG_LEVEL=DEBUG
       - LOGLAMA_URL=http://loglama:5001
-      - PYBOX_API_URL=http://pybox:8000
+      - BEXY_API_URL=http://bexy:8000
       - PYLLM_API_URL=http://pyllm:8001
       - PYLAMA_API_URL=http://pylama:8003
       - SHELLAMA_API_URL=http://shellama:8002
@@ -155,7 +155,7 @@ services:
     depends_on:
       loglama:
         condition: service_healthy
-      pybox:
+      bexy:
         condition: service_started
       pyllm:
         condition: service_started

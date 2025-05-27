@@ -29,7 +29,7 @@ ROOT_DIR = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Components to test
 COMPONENTS = [
-    "pybox",
+    "bexy",
     "pyllm",
     "devlama",  # Renamed from pylama
     "shellama",

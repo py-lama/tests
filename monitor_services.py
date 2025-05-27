@@ -20,7 +20,7 @@ console = Console()
 
 # Service endpoints
 SERVICES = {
-    "PyBox": "http://localhost:8000/health",
+    "Bexy": "http://localhost:8000/health",
     "PyLLM": "http://localhost:8001/health",
     "PyLama": "http://localhost:8002/health",
     "WebLama": "http://localhost:5000/health"

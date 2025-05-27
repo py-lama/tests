@@ -26,7 +26,7 @@ from shellama import file_ops, dir_ops, shell
 API_PORT = 8080
 SHELLAMA_PORT = 8002
 PYLAMA_PORT = 8003
-PYBOX_PORT = 8000
+BEXY_PORT = 8000
 PYLLM_PORT = 8001
 
 # Process tracking

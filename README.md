@@ -5,7 +5,7 @@
 This repository contains a microservices-based architecture for the PyLama ecosystem, consisting of the following components:
 
 - **LogLama**: Primary service for the entire ecosystem that provides centralized logging, environment management, dependency validation, and service orchestration
-- **PyBox**: Python code execution sandbox
+- **BEXY**: Python code execution sandbox
 - **PyLLM**: LLM operations service
 - **PyLama**: Ollama management service
 - **SheLLama**: Shell and filesystem operations service
@@ -36,7 +36,7 @@ The PyLama ecosystem is built around LogLama as the primary service that starts 
          |                |                |
          v                v                v
 +------------+     +------------+     +---------------+     +------------+
-|   PyBox    |     |   PyLLM    |<--->|   PyLama      |<--->| SheLLama   |
+|   BEXY    |     |   PyLLM    |<--->|   PyLama      |<--->| SheLLama   |
 |  (Sandbox) |<--->|   (LLM)    |     | (Orchestrator)|     |  (Shell)   |
 +------------+     +------------+     +---------------+     +------------+
       ^                  ^                  ^                  ^
@@ -87,7 +87,7 @@ PyLama serves as the orchestration point for Ollama integration. It provides:
 
 APILama acts as the API gateway that connects all backend services and exposes them to the frontend. It provides:
 - Unified REST API for all services
-- Request routing to appropriate backend services (PyBox, PyLLM, SheLLama, PyLama)
+- Request routing to appropriate backend services (BEXY, PyLLM, SheLLama, PyLama)
 - Authentication and authorization
 - Health monitoring and logging
 - Error handling and response formatting
@@ -117,7 +117,7 @@ SheLLama provides shell and filesystem operations as a dedicated REST API servic
 
 APILama communicates with SheLLama to perform all file system and shell operations, maintaining a clean separation between the frontend and backend components.
 
-### PyBox (Port 8000) - Code Execution Sandbox
+### BEXY (Port 8000) - Code Execution Sandbox
 
 Python code execution sandbox service that provides:
 - Code execution in isolated environments
@@ -256,9 +256,9 @@ For development purposes, you can set up each component individually.
    pip install -e .
    ```
 
-   #### PyBox (Sandbox)
+   #### BEXY (Sandbox)
    ```bash
-   cd pybox
+   cd bexy
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -e .
@@ -310,11 +310,11 @@ This script will start each service in the background, save the PID to a file, a
 
 If you prefer to start each service manually, follow these steps in order:
 
-1. **PyBox** (Sandbox):
+1. **BEXY** (Sandbox):
    ```bash
-   cd pybox
+   cd bexy
    source venv/bin/activate  # On Windows: venv\Scripts\activate
-   python -m pybox.app --port 8000 --host 127.0.0.1
+   python -m bexy.app --port 8000 --host 127.0.0.1
    ```
 
 2. **PyLLM** (LLM Operations):
@@ -380,10 +380,10 @@ GET /api/pylama/health
 POST /api/pylama/execute
 ```
 
-#### PyBox Endpoints
+#### BEXY Endpoints
 ```
-GET /api/pybox/health
-POST /api/pybox/execute
+GET /api/bexy/health
+POST /api/bexy/execute
 ```
 
 #### PyLLM Endpoints
@@ -480,7 +480,7 @@ The PyLama ecosystem is designed to provide a seamless integration between the b
    - Create, rename, and delete files
 
 4. **Integration with PyLama Services**:
-   - Execute code through PyBox
+   - Execute code through BEXY
    - Interact with LLMs through PyLLM
    - Perform file operations through SheLLama
    - Access logs through LogLama
