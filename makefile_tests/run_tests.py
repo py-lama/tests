@@ -33,25 +33,25 @@ def makefile_suite():
 def docker_suite():
     """Return a test suite for Docker tests."""
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(test_docker.TestDockerfiles))
-    suite.addTest(unittest.makeSuite(test_docker.TestDockerCompose))
-    suite.addTest(unittest.makeSuite(test_docker.TestDockerMakeTargets))
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(test_docker.TestDockerfiles))
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(test_docker.TestDockerCompose))
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(test_docker.TestDockerMakeTargets))
     return suite
 
 def integration_suite():
     """Return a test suite for integration tests."""
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(test_integration.TestComponentIntegration))
-    suite.addTest(unittest.makeSuite(test_integration.TestDockerIntegration))
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(test_integration.TestComponentIntegration))
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(test_integration.TestDockerIntegration))
     return suite
 
 def loglama_suite():
     """Return a test suite for LogLama integration tests."""
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(test_loglama_integration.TestLogLamaFiles))
-    suite.addTest(unittest.makeSuite(test_loglama_integration.TestLogLamaScripts))
-    suite.addTest(unittest.makeSuite(test_loglama_integration.TestLogLamaCollector))
-    suite.addTest(unittest.makeSuite(test_loglama_integration.TestDockerLogLamaIntegration))
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(test_loglama_integration.TestLogLamaFiles))
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(test_loglama_integration.TestLogLamaScripts))
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(test_loglama_integration.TestLogLamaCollector))
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(test_loglama_integration.TestDockerLogLamaIntegration))
     return suite
 
 def all_tests_suite():
