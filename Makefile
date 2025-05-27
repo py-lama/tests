@@ -1,6 +1,8 @@
 # PyLama Ecosystem Makefile with Integrated Logging
 # This Makefile ensures LogLama starts first to capture logs from all services
 
+ROOT_DIR := ..
+
 # Default values for environment variables
 PORT ?= 8080
 HOST ?= 127.0.0.1
@@ -19,11 +21,11 @@ LOG_DIR ?= ./logs
 DB_PATH ?= $(LOG_DIR)/loglama.db
 
 # Colors for better output
-GREEN := "\033[0;32m"
-YELLOW := "\033[0;33m"
-BLUE := "\033[0;34m"
-RED := "\033[0;31m"
-NC := "\033[0m" # No Color
+GREEN := \033[0;32m
+YELLOW := \033[0;33m
+BLUE := \033[0;34m
+RED := \033[0;31m
+NC := \033[0m # No Color
 
 .PHONY: all setup clean test lint format run-all run-loglama run-collector run-pybox run-pyllm run-pylama run-apilama run-shellama run-weblama stop-all stop status help
 
@@ -37,31 +39,31 @@ setup: setup-loglama setup-pybox setup-pyllm setup-pylama setup-apilama setup-sh
 # Setup individual projects with virtual environments
 setup-loglama:
 	@echo "$(BLUE)Setting up LogLama (Logging Service)...$(NC)"
-	cd loglama && python -m venv venv && . venv/bin/activate && pip install -e .
+	cd $(ROOT_DIR)/loglama && python -m venv venv && . venv/bin/activate && pip install -e .
 
 setup-pybox:
 	@echo "$(BLUE)Setting up PyBox...$(NC)"
-	cd pybox && python -m venv venv && . venv/bin/activate && pip install -e .
+	cd $(ROOT_DIR)/pybox && python -m venv venv && . venv/bin/activate && pip install -e .
 
 setup-pyllm:
 	@echo "$(BLUE)Setting up PyLLM...$(NC)"
-	cd pyllm && python -m venv venv && . venv/bin/activate && pip install -e .
+	cd $(ROOT_DIR)/pyllm && python -m venv venv && . venv/bin/activate && pip install -e .
 
 setup-pylama:
 	@echo "$(BLUE)Setting up PyLama (Central Orchestration Service)...$(NC)"
-	cd pylama && python -m venv venv && . venv/bin/activate && pip install -e .
+	cd $(ROOT_DIR)/pylama && python -m venv venv && . venv/bin/activate && pip install -e .
 
 setup-apilama:
 	@echo "$(BLUE)Setting up APILama (API Gateway)...$(NC)"
-	cd apilama && python -m venv venv && . venv/bin/activate && pip install -e .
+	cd $(ROOT_DIR)/apilama && python -m venv venv && . venv/bin/activate && pip install -e .
 
 setup-shellama:
 	@echo "$(BLUE)Setting up SheLLama (Shell Operations)...$(NC)"
-	cd shellama && python -m venv venv && . venv/bin/activate && pip install -e .
+	cd $(ROOT_DIR)/shellama && python -m venv venv && . venv/bin/activate && pip install -e .
 
 setup-weblama:
 	@echo "$(BLUE)Setting up WebLama (Frontend)...$(NC)"
-	cd weblama && npm install
+	cd $(ROOT_DIR)/weblama && npm install
 
 # Create logs directory
 create-logs-dir:
@@ -76,7 +78,7 @@ reset-loglama-db: create-logs-dir
 # Run LogLama web interface (must run first to capture logs)
 run-loglama: reset-loglama-db
 	@echo "$(BLUE)Starting LogLama web interface on $(HOST):$(LOGLAMA_PORT)...$(NC)"
-	@cd loglama && . venv/bin/activate && python -m loglama.cli.main web --host $(HOST) --port $(LOGLAMA_PORT) --db $(DB_PATH) & echo $$! > $(LOG_DIR)/loglama.pid
+	@cd $(ROOT_DIR)/loglama && . venv/bin/activate && python -m loglama.cli.main web --host $(HOST) --port $(LOGLAMA_PORT) --db $(DB_PATH) & echo $$! > $(LOG_DIR)/loglama.pid
 	@echo "$(GREEN)LogLama web interface started with PID $$(cat $(LOG_DIR)/loglama.pid)$(NC)"
 	@echo "$(GREEN)LogLama web interface available at http://$(HOST):$(LOGLAMA_PORT)$(NC)"
 	@sleep 2 # Give LogLama time to initialize
@@ -84,49 +86,49 @@ run-loglama: reset-loglama-db
 # Run LogLama collector daemon
 run-collector: create-logs-dir
 	@echo "$(BLUE)Starting LogLama collector daemon...$(NC)"
-	@cd loglama && . venv/bin/activate && python -m loglama.cli.main collect-daemon --background
+	@cd $(ROOT_DIR)/loglama && . venv/bin/activate && python -m loglama.cli.main collect-daemon --background
 	@echo "$(GREEN)LogLama collector daemon started$(NC)"
 	@sleep 1 # Give collector time to initialize
 
 # Run PyBox service
 run-pybox: create-logs-dir
 	@echo "$(BLUE)Starting PyBox on $(HOST):$(PYBOX_PORT)...$(NC)"
-	@cd pybox && . venv/bin/activate && PORT=$(PYBOX_PORT) HOST=$(HOST) python -m pybox.api.server & echo $$! > $(LOG_DIR)/pybox.pid
+	@cd $(ROOT_DIR)/pybox && . venv/bin/activate && PORT=$(PYBOX_PORT) HOST=$(HOST) python -m pybox.api.server & echo $$! > $(LOG_DIR)/pybox.pid
 	@echo "$(GREEN)PyBox started with PID $$(cat $(LOG_DIR)/pybox.pid)$(NC)"
 	@echo "$(GREEN)PyBox available at http://$(HOST):$(PYBOX_PORT)$(NC)"
 
 # Run PyLLM service
 run-pyllm: create-logs-dir
 	@echo "$(BLUE)Starting PyLLM on $(HOST):$(PYLLM_PORT)...$(NC)"
-	@cd pyllm && . venv/bin/activate && PORT=$(PYLLM_PORT) HOST=$(HOST) python -m pyllm.api.server & echo $$! > $(LOG_DIR)/pyllm.pid
+	@cd $(ROOT_DIR)/pyllm && . venv/bin/activate && PORT=$(PYLLM_PORT) HOST=$(HOST) python -m pyllm.api.server & echo $$! > $(LOG_DIR)/pyllm.pid
 	@echo "$(GREEN)PyLLM started with PID $$(cat $(LOG_DIR)/pyllm.pid)$(NC)"
 	@echo "$(GREEN)PyLLM available at http://$(HOST):$(PYLLM_PORT)$(NC)"
 
 # Run SheLLama service
 run-shellama: create-logs-dir
 	@echo "$(BLUE)Starting SheLLama on $(HOST):$(SHELLAMA_PORT)...$(NC)"
-	@cd shellama && . venv/bin/activate && PORT=$(SHELLAMA_PORT) HOST=$(HOST) python -m shellama.api.server & echo $$! > $(LOG_DIR)/shellama.pid
+	@cd $(ROOT_DIR)/shellama && . venv/bin/activate && PORT=$(SHELLAMA_PORT) HOST=$(HOST) python -m shellama.api.server & echo $$! > $(LOG_DIR)/shellama.pid
 	@echo "$(GREEN)SheLLama started with PID $$(cat $(LOG_DIR)/shellama.pid)$(NC)"
 	@echo "$(GREEN)SheLLama available at http://$(HOST):$(SHELLAMA_PORT)$(NC)"
 
 # Run PyLama service
 run-pylama: create-logs-dir
 	@echo "$(BLUE)Starting PyLama on $(HOST):$(PYLAMA_PORT)...$(NC)"
-	@cd pylama && . venv/bin/activate && PORT=$(PYLAMA_PORT) HOST=$(HOST) python -m pylama.api.server & echo $$! > $(LOG_DIR)/pylama.pid
+	@cd $(ROOT_DIR)/pylama && . venv/bin/activate && PORT=$(PYLAMA_PORT) HOST=$(HOST) python -m pylama.api.server & echo $$! > $(LOG_DIR)/pylama.pid
 	@echo "$(GREEN)PyLama started with PID $$(cat $(LOG_DIR)/pylama.pid)$(NC)"
 	@echo "$(GREEN)PyLama available at http://$(HOST):$(PYLAMA_PORT)$(NC)"
 
 # Run APILama service
 run-apilama: create-logs-dir
 	@echo "$(BLUE)Starting APILama on $(HOST):$(APILAMA_PORT)...$(NC)"
-	@cd apilama && . venv/bin/activate && PORT=$(APILAMA_PORT) HOST=$(HOST) python -m apilama.api.server & echo $$! > $(LOG_DIR)/apilama.pid
+	@cd $(ROOT_DIR)/apilama && . venv/bin/activate && PORT=$(APILAMA_PORT) HOST=$(HOST) python -m apilama.api.server & echo $$! > $(LOG_DIR)/apilama.pid
 	@echo "$(GREEN)APILama started with PID $$(cat $(LOG_DIR)/apilama.pid)$(NC)"
 	@echo "$(GREEN)APILama available at http://$(HOST):$(APILAMA_PORT)$(NC)"
 
 # Run WebLama service with log collection enabled
 run-weblama: create-logs-dir
 	@echo "$(BLUE)Starting WebLama on $(HOST):$(WEBLAMA_PORT)...$(NC)"
-	@cd weblama && PORT=$(WEBLAMA_PORT) HOST=$(HOST) COLLECT=1 make web & echo $$! > $(LOG_DIR)/weblama.pid
+	@cd $(ROOT_DIR)/weblama && PORT=$(WEBLAMA_PORT) HOST=$(HOST) COLLECT=1 make web & echo $$! > $(LOG_DIR)/weblama.pid
 	@echo "$(GREEN)WebLama started with PID $$(cat $(LOG_DIR)/weblama.pid)$(NC)"
 	@echo "$(GREEN)WebLama available at http://$(HOST):$(WEBLAMA_PORT)$(NC)"
 
