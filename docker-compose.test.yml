@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  tests:
+    build:
+      context: .
+      dockerfile: tests/Dockerfile.test
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - PYTHONPATH=/app
+    entrypoint: ["/app/tests/run_tests.sh"]
+    command: ["-t", "all"]
+
+  # Add any dependent services here (e.g., MQTT broker, database, etc.)
+  mqtt:
+    image: eclipse-mosquitto:2.0
+    ports:
+      - "1883:1883"
+    environment:
+      - ALLOW_ANONYMOUS=true
+
+networks:
+  default:
+    name: dialogchain-test
+    driver: bridge
