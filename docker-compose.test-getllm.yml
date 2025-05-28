@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Test environment for getllm package
+  getllm-test:
+    build:
+      context: ../getllm
+      dockerfile: ../tests/Dockerfile.test-getllm
+    volumes:
+      - ../getllm:/app
+      - ./test-results:/app/test-results
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TEST_MODE=true
+    command: pytest
+
+  # Test environment with Ollama
+  getllm-test-with-ollama:
+    build:
+      context: ../getllm
+      dockerfile: ../tests/Dockerfile.test-getllm
+    volumes:
+      - ../getllm:/app
+      - ./test-results:/app/test-results
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TEST_MODE=true
+      - OLLAMA_HOST=ollama
+    depends_on:
+      - ollama
+    command: cli
+
+  # Ollama service for testing
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  # Ansible test environment
+  ansible-test:
+    build:
+      context: ../getllm
+      dockerfile: ../tests/Dockerfile.test-getllm
+    volumes:
+      - ../getllm:/app
+      - ./ansible:/app/tests/ansible
+      - ./test-results:/app/test-results
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ANSIBLE_HOST_KEY_CHECKING=false
+    command: ansible
+
+volumes:
+  ollama_data:

@@ -1,0 +1,95 @@
+---
+# Ansible playbook for testing getllm package
+- name: Test getllm package
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  
+  vars:
+    test_dir: "/tmp/getllm_test"
+    venv_dir: "{{ test_dir }}/venv"
+    
+  tasks:
+    - name: Create test directory
+      file:
+        path: "{{ test_dir }}"
+        state: directory
+        mode: '0755'
+      
+    - name: Create virtual environment
+      command: python -m venv {{ venv_dir }}
+      args:
+        creates: "{{ venv_dir }}"
+      
+    - name: Install getllm in virtual environment
+      pip:
+        name: getllm
+        state: latest
+        virtualenv: "{{ venv_dir }}"
+      register: pip_result
+      ignore_errors: yes
+      
+    - name: Display pip installation result
+      debug:
+        var: pip_result
+        
+    - name: Test getllm command exists
+      shell: |
+        source {{ venv_dir }}/bin/activate
+        which getllm
+      register: which_result
+      ignore_errors: yes
+      
+    - name: Display which result
+      debug:
+        var: which_result
+        
+    - name: Test getllm --help
+      shell: |
+        source {{ venv_dir }}/bin/activate
+        getllm --help
+      register: help_result
+      ignore_errors: yes
+      
+    - name: Display help result
+      debug:
+        var: help_result
+        
+    - name: Test getllm list
+      shell: |
+        source {{ venv_dir }}/bin/activate
+        getllm list
+      register: list_result
+      ignore_errors: yes
+      
+    - name: Display list result
+      debug:
+        var: list_result
+        
+    - name: Test getllm --search
+      shell: |
+        source {{ venv_dir }}/bin/activate
+        timeout 10s getllm --search llama || echo "Search command timed out or failed"
+      register: search_result
+      ignore_errors: yes
+      
+    - name: Display search result
+      debug:
+        var: search_result
+        
+    - name: Check for common errors
+      shell: |
+        source {{ venv_dir }}/bin/activate
+        getllm list 2>&1 | grep -i "error" || echo "No errors found"
+      register: error_check
+      ignore_errors: yes
+      
+    - name: Display error check result
+      debug:
+        var: error_check
+        
+    - name: Clean up test directory
+      file:
+        path: "{{ test_dir }}"
+        state: absent
+      when: false  # Set to true to clean up after tests
