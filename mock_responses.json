@@ -1,0 +1,14 @@
+{
+  "health": {
+    "status": "success",
+    "message": "API is healthy",
+    "service": "pylama-test"
+  },
+  "markdown": {
+    "status": "success",
+    "files": [
+      { "name": "test1.md", "path": "test1.md", "size": 1024, "modified": 1620000000 },
+      { "name": "test2.md", "path": "test2.md", "size": 2048, "modified": 1620100000 }
+    ]
+  }
+}
