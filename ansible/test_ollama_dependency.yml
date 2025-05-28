@@ -1,0 +1,135 @@
+---
+# Ansible playbook for testing the Ollama dependency in getllm
+- name: Test getllm Ollama dependency handling
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  
+  vars:
+    test_dir: "/tmp/getllm_ollama_test"
+    venv_dir: "{{ test_dir }}/venv"
+    
+  tasks:
+    - name: Create test directory
+      file:
+        path: "{{ test_dir }}"
+        state: directory
+        mode: '0755'
+      
+    - name: Create virtual environment
+      command: python -m venv {{ venv_dir }}
+      args:
+        creates: "{{ venv_dir }}"
+      
+    - name: Install getllm in virtual environment
+      pip:
+        name: getllm
+        state: latest
+        virtualenv: "{{ venv_dir }}"
+      register: pip_result
+      ignore_errors: yes
+      
+    - name: Display pip installation result
+      debug:
+        var: pip_result
+        
+    # Test 1: Check if Ollama is installed
+    - name: Check if Ollama is installed
+      command: which ollama
+      register: ollama_check
+      ignore_errors: yes
+      
+    - name: Display Ollama check result
+      debug:
+        var: ollama_check
+        
+    # Test 2: Run getllm search with Ollama not available
+    - name: Temporarily rename Ollama if it exists
+      block:
+        - name: Create backup directory
+          file:
+            path: "{{ test_dir }}/backup"
+            state: directory
+            mode: '0755'
+          when: ollama_check.rc == 0
+          
+        - name: Move Ollama binary to backup location
+          command: "cp {{ ollama_check.stdout }} {{ test_dir }}/backup/ollama"
+          when: ollama_check.rc == 0
+          
+        - name: Temporarily modify PATH to exclude Ollama
+          set_fact:
+            original_path: "{{ ansible_env.PATH }}"
+            modified_path: "{{ ansible_env.PATH | regex_replace('[^:]*ollama[^:]*:?', '') }}"
+          when: ollama_check.rc == 0
+          
+        - name: Run getllm search without Ollama
+          shell: |
+            source {{ venv_dir }}/bin/activate
+            PATH="{{ modified_path }}" getllm --search bielik 2>&1
+          register: search_without_ollama
+          environment:
+            PATH: "{{ modified_path }}"
+          ignore_errors: yes
+          when: ollama_check.rc == 0
+          
+        - name: Display search without Ollama result
+          debug:
+            var: search_without_ollama
+          when: ollama_check.rc == 0
+          
+        - name: Check if error message is correct
+          assert:
+            that:
+              - "'Ollama is not installed' in search_without_ollama.stdout"
+            fail_msg: "Error message for missing Ollama is not displayed correctly"
+            success_msg: "Error message for missing Ollama is displayed correctly"
+          when: ollama_check.rc == 0 and search_without_ollama is defined
+          
+      always:
+        - name: Restore PATH
+          set_fact:
+            ansible_env:
+              PATH: "{{ original_path }}"
+          when: ollama_check.rc == 0 and original_path is defined
+          
+    # Test 3: Run getllm search with mock mode
+    - name: Run getllm search with mock mode
+      shell: |
+        source {{ venv_dir }}/bin/activate
+        getllm --mock --search bielik 2>&1
+      register: search_with_mock
+      ignore_errors: yes
+      
+    - name: Display search with mock result
+      debug:
+        var: search_with_mock
+        
+    - name: Check if mock mode works
+      assert:
+        that:
+          - search_with_mock.rc == 0
+          - "'Using mock mode' in search_with_mock.stdout"
+        fail_msg: "Mock mode is not working correctly"
+        success_msg: "Mock mode is working correctly"
+      when: search_with_mock is defined
+      
+    # Test 4: Run getllm search with Ollama restored
+    - name: Run getllm search with Ollama available
+      shell: |
+        source {{ venv_dir }}/bin/activate
+        getllm --search bielik 2>&1
+      register: search_with_ollama
+      ignore_errors: yes
+      when: ollama_check.rc == 0
+      
+    - name: Display search with Ollama result
+      debug:
+        var: search_with_ollama
+      when: ollama_check.rc == 0
+      
+    - name: Clean up test directory
+      file:
+        path: "{{ test_dir }}"
+        state: absent
+      when: false  # Set to true to clean up after tests
