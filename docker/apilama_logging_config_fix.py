@@ -35,8 +35,8 @@ try:
     from loglama.utils import configure_logging, LogContext, capture_context
     LOGLAMA_AVAILABLE = True
 except ImportError as e:
-    print(f"PyLogs import error: {e}")
-    print("PyLogs package not available. Using default logging configuration.")
+    print(f"LogLama import error: {e}")
+    print("LogLama package not available. Using default logging configuration.")
     LOGLAMA_AVAILABLE = False
 
 # Define LogContext class if LogLama is not available
