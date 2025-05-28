@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 COMPONENTS = {
     "bexy": {"port": 9000, "log_file": "bexy.log"},
     "getllm": {"port": 9001, "log_file": "getllm.log"},
-    "devlama": {"port": 9003, "log_file": "devlama.log"},  # Renamed from pylama
+    "devlama": {"port": 9003, "log_file": "devlama.log"},  # Renamed from devlama
     "shellama": {"port": 9002, "log_file": "shellama.log"},
     "apilama": {"port": 9080, "log_file": "apilama.log"},
     "weblama": {"port": 9081, "log_file": "weblama.log"},

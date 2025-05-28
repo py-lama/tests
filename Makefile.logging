@@ -10,7 +10,7 @@ LOGLAMA_PORT ?= 5001
 BEXY_PORT ?= 8000
 GETLLM_PORT ?= 8001
 SHELLAMA_PORT ?= 8002
-PYLAMA_PORT ?= 8003
+DEVLAMA_PORT ?= 8003
 APILAMA_PORT ?= 8080
 WEBLAMA_PORT ?= 8084
 
@@ -25,13 +25,13 @@ BLUE := "\033[0;34m"
 RED := "\033[0;31m"
 NC := "\033[0m" # No Color
 
-.PHONY: all setup clean test lint format run-all run-loglama run-collector run-bexy run-getllm run-pylama run-apilama run-shellama run-weblama stop-all status help
+.PHONY: all setup clean test lint format run-all run-loglama run-collector run-bexy run-getllm run-devlama run-apilama run-shellama run-weblama stop-all status help
 
 # Default target
 all: help
 
 # Setup all projects with virtual environments
-setup: setup-loglama setup-bexy setup-getllm setup-pylama setup-apilama setup-shellama setup-weblama
+setup: setup-loglama setup-bexy setup-getllm setup-devlama setup-apilama setup-shellama setup-weblama
 	@echo "\n$(GREEN)All services have been set up successfully!$(NC)"
 
 # Setup individual projects with virtual environments
@@ -47,9 +47,9 @@ setup-getllm:
 	@echo "$(BLUE)Setting up PyLLM...$(NC)"
 	cd getllm && python -m venv venv && . venv/bin/activate && pip install -e .
 
-setup-pylama:
+setup-devlama:
 	@echo "$(BLUE)Setting up PyLama (Central Orchestration Service)...$(NC)"
-	cd pylama && python -m venv venv && . venv/bin/activate && pip install -e .
+	cd devlama && python -m venv venv && . venv/bin/activate && pip install -e .
 
 setup-apilama:
 	@echo "$(BLUE)Setting up APILama (API Gateway)...$(NC)"
@@ -110,11 +110,11 @@ run-shellama: create-logs-dir
 	@echo "$(GREEN)SheLLama available at http://$(HOST):$(SHELLAMA_PORT)$(NC)"
 
 # Run PyLama service
-run-pylama: create-logs-dir
-	@echo "$(BLUE)Starting PyLama on $(HOST):$(PYLAMA_PORT)...$(NC)"
-	@cd pylama && . venv/bin/activate && PORT=$(PYLAMA_PORT) HOST=$(HOST) python -m pylama.api.server & echo $$! > $(LOG_DIR)/pylama.pid
-	@echo "$(GREEN)PyLama started with PID $$(cat $(LOG_DIR)/pylama.pid)$(NC)"
-	@echo "$(GREEN)PyLama available at http://$(HOST):$(PYLAMA_PORT)$(NC)"
+run-devlama: create-logs-dir
+	@echo "$(BLUE)Starting PyLama on $(HOST):$(DEVLAMA_PORT)...$(NC)"
+	@cd devlama && . venv/bin/activate && PORT=$(DEVLAMA_PORT) HOST=$(HOST) python -m devlama.api.server & echo $$! > $(LOG_DIR)/devlama.pid
+	@echo "$(GREEN)PyLama started with PID $$(cat $(LOG_DIR)/devlama.pid)$(NC)"
+	@echo "$(GREEN)PyLama available at http://$(HOST):$(DEVLAMA_PORT)$(NC)"
 
 # Run APILama service
 run-apilama: create-logs-dir
@@ -131,7 +131,7 @@ run-weblama: create-logs-dir
 	@echo "$(GREEN)WebLama available at http://$(HOST):$(WEBLAMA_PORT)$(NC)"
 
 # Run all services in the correct order with LogLama first
-run-all: run-loglama run-collector run-bexy run-getllm run-shellama run-pylama run-apilama run-weblama
+run-all: run-loglama run-collector run-bexy run-getllm run-shellama run-devlama run-apilama run-weblama
 	@echo "\n$(GREEN)All PyLama services are now running!$(NC)"
 	@echo "$(GREEN)LogLama web interface: http://$(HOST):$(LOGLAMA_PORT)$(NC)"
 	@echo "$(GREEN)WebLama interface: http://$(HOST):$(WEBLAMA_PORT)$(NC)"
@@ -185,7 +185,7 @@ status:
 	@echo "$(GREEN)BEXY: http://$(HOST):$(BEXY_PORT)$(NC)"
 	@echo "$(GREEN)PyLLM: http://$(HOST):$(GETLLM_PORT)$(NC)"
 	@echo "$(GREEN)SheLLama: http://$(HOST):$(SHELLAMA_PORT)$(NC)"
-	@echo "$(GREEN)PyLama: http://$(HOST):$(PYLAMA_PORT)$(NC)"
+	@echo "$(GREEN)PyLama: http://$(HOST):$(DEVLAMA_PORT)$(NC)"
 	@echo "$(GREEN)APILama: http://$(HOST):$(APILAMA_PORT)$(NC)"
 	@echo "$(GREEN)WebLama: http://$(HOST):$(WEBLAMA_PORT)$(NC)"
 
@@ -209,7 +209,7 @@ help:
 	@echo "  setup-loglama    - Set up LogLama only"
 	@echo "  setup-bexy      - Set up BEXY only"
 	@echo "  setup-getllm      - Set up PyLLM only"
-	@echo "  setup-pylama     - Set up PyLama only"
+	@echo "  setup-devlama     - Set up PyLama only"
 	@echo "  setup-apilama    - Set up APILama only"
 	@echo "  setup-shellama   - Set up SheLLama only"
 	@echo "  setup-weblama    - Set up WebLama only"
@@ -221,7 +221,7 @@ help:
 	@echo "  run-bexy        - Run BEXY on port $(BEXY_PORT)"
 	@echo "  run-getllm        - Run PyLLM on port $(GETLLM_PORT)"
 	@echo "  run-shellama     - Run SheLLama on port $(SHELLAMA_PORT)"
-	@echo "  run-pylama       - Run PyLama on port $(PYLAMA_PORT)"
+	@echo "  run-devlama       - Run PyLama on port $(DEVLAMA_PORT)"
 	@echo "  run-apilama      - Run APILama on port $(APILAMA_PORT)"
 	@echo "  run-weblama      - Run WebLama on port $(WEBLAMA_PORT)"
 	@echo ""

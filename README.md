@@ -139,7 +139,7 @@ The PyLama ecosystem uses a centralized environment and logging system managed b
 
 ### Key Features
 
-- **Single Source of Truth**: All projects use a common `.env` file in the `pylama` directory
+- **Single Source of Truth**: All projects use a common `.env` file in the `devlama` directory
 - **Automatic Validation**: LogLama checks for required variables and adds them with defaults if missing
 - **Dependency Management**: LogLama can check and install dependencies before starting services
 - **Service Orchestration**: LogLama can start all services in the correct order
@@ -234,7 +234,7 @@ For development purposes, you can set up each component individually.
 
    #### PyLama (Central Orchestration Service)
    ```bash
-   cd pylama
+   cd devlama
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -e .
@@ -280,28 +280,28 @@ For development purposes, you can set up each component individually.
 
 ### Running the Services Manually
 
-#### Option 1: Using the start-pylama.sh Script (Recommended)
+#### Option 1: Using the start-devlama.sh Script (Recommended)
 
 The repository includes a convenient script that can start, stop, and manage all PyLama services:
 
 ```bash
 # Start all services
-./start-pylama.sh start
+./start-devlama.sh start
 
 # Stop all services
-./start-pylama.sh stop
+./start-devlama.sh stop
 
 # Restart all services
-./start-pylama.sh restart
+./start-devlama.sh restart
 
 # Check status of all services
-./start-pylama.sh status
+./start-devlama.sh status
 
 # View logs for a specific service
-./start-pylama.sh logs weblama
+./start-devlama.sh logs weblama
 
 # Open WebLama in browser
-./start-pylama.sh open
+./start-devlama.sh open
 ```
 
 This script will start each service in the background, save the PID to a file, and redirect the output to a log file. You can check the status of each service or view the logs at any time.
@@ -341,9 +341,9 @@ If you prefer to start each service manually, follow these steps in order:
 
 5. **PyLama** (Central Orchestration):
    ```bash
-   cd pylama
+   cd devlama
    source venv/bin/activate  # On Windows: venv\Scripts\activate
-   python -m pylama.app --port 8003 --host 127.0.0.1
+   python -m devlama.app --port 8003 --host 127.0.0.1
    ```
    PyLama coordinates all other services and provides a unified interface.
 
@@ -376,8 +376,8 @@ Returns the health status of the APILama service.
 
 #### PyLama Endpoints
 ```
-GET /api/pylama/health
-POST /api/pylama/execute
+GET /api/devlama/health
+POST /api/devlama/execute
 ```
 
 #### BEXY Endpoints
@@ -454,13 +454,13 @@ The PyLama ecosystem is designed to provide a seamless integration between the b
 3. **Alternative ways to open WebLama**:
    ```bash
    # Using the PyLama CLI
-   python -m pylama.cli open
+   python -m devlama.cli open
    
    # Or when starting services
-   python -m pylama.cli start --weblama --open
+   python -m devlama.cli start --weblama --open
    
    # Using the convenience script
-   ./start-pylama.sh open
+   ./start-devlama.sh open
    ```
 
 ### WebLama Interface Features
@@ -524,10 +524,10 @@ The PyLama ecosystem includes integration with Grafana for advanced log visualiz
    docker-compose ps
    
    # Using the PyLama CLI
-   python -m pylama.cli status
+   python -m devlama.cli status
    
    # Using the convenience script
-   ./start-pylama.sh status
+   ./start-devlama.sh status
    ```
 
 2. **Check Logs for Errors**:

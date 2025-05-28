@@ -25,7 +25,7 @@ from shellama import file_ops, dir_ops, shell
 # Configuration
 API_PORT = 8080
 SHELLAMA_PORT = 8002
-PYLAMA_PORT = 8003
+DEVLAMA_PORT = 8003
 BEXY_PORT = 8000
 GETLLM_PORT = 8001
 

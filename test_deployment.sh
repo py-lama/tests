@@ -37,8 +37,8 @@ fi
 
 # Test PyLama API
 echo "\nTesting PyLama API..."
-PYLAMA_HEALTH=$(curl -s http://localhost:8002/health)
-if [[ $PYLAMA_HEALTH == *"healthy"* ]]; then
+DEVLAMA_HEALTH=$(curl -s http://localhost:8002/health)
+if [[ $DEVLAMA_HEALTH == *"healthy"* ]]; then
   echo "✅ PyLama API is running"
 else
   echo "❌ PyLama API is not responding correctly"

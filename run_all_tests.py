@@ -31,7 +31,7 @@ ROOT_DIR = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 COMPONENTS = [
     "bexy",
     "getllm",
-    "devlama",  # Renamed from pylama
+    "devlama",  # Renamed from devlama
     "shellama",
     "apilama",
     "weblama",

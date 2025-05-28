@@ -12,17 +12,17 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir -p /app/logs
 
 # Copy the entire service directory first
-COPY pylama /app/pylama
+COPY devlama /app/devlama
 
 # Copy the __main__.py file to the PyLama package
-COPY docker/pylama_main_fix.py /app/pylama/pylama/__main__.py
+COPY docker/devlama_main_fix.py /app/devlama/devlama/__main__.py
 
 # Install dependencies
-RUN pip install --no-cache-dir -r pylama/requirements.txt
+RUN pip install --no-cache-dir -r devlama/requirements.txt
 RUN pip install --no-cache-dir fastapi uvicorn requests python-dotenv
 
 # Install the package in development mode
-WORKDIR /app/pylama
+WORKDIR /app/devlama
 RUN pip install -e .
 WORKDIR /app
 
@@ -34,4 +34,4 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8002/health || exit 1
 
 # Command to run the API server
-CMD ["python", "-m", "pylama.api", "--host", "0.0.0.0", "--port", "8002"]
+CMD ["python", "-m", "devlama.api", "--host", "0.0.0.0", "--port", "8002"]

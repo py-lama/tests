@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 COMPONENTS = {
     "bexy": {"port": 9000, "endpoint": "/health"},
     "getllm": {"port": 9001, "endpoint": "/health"},
-    "devlama": {"port": 9003, "endpoint": "/health"},  # Renamed from pylama
+    "devlama": {"port": 9003, "endpoint": "/health"},  # Renamed from devlama
     "shellama": {"port": 9002, "endpoint": "/health"},
     "apilama": {"port": 9080, "endpoint": "/health"},
     "weblama": {"port": 9081, "endpoint": "/"},
@@ -201,10 +201,10 @@ class TestComponentIntegration(IntegrationTestCase):
         for component in COMPONENTS:
             # Special handling for devlama during transition
             if component == "devlama":
-                # Check for either devlama or pylama (original name)
+                # Check for either devlama or devlama (original name)
                 self.assertTrue(
-                    "run-devlama" in makefile_content or "run-pylama" in makefile_content,
-                    f"Neither run-devlama nor run-pylama target found in main Makefile"
+                    "run-devlama" in makefile_content or "run-devlama" in makefile_content,
+                    f"Neither run-devlama nor run-devlama target found in main Makefile"
                 )
             elif component == "loglama":
                 # LogLama might be configured separately
@@ -241,10 +241,10 @@ class TestDockerIntegration(IntegrationTestCase):
         for component in COMPONENTS:
             # Special handling for components during transition
             if component == "devlama":
-                # Check for either devlama or pylama (original name)
+                # Check for either devlama or devlama (original name)
                 self.assertTrue(
-                    "devlama" in compose_content.lower() or "pylama" in compose_content.lower(),
-                    f"Neither devlama nor pylama found in docker-compose file"
+                    "devlama" in compose_content.lower() or "devlama" in compose_content.lower(),
+                    f"Neither devlama nor devlama found in docker-compose file"
                 )
             elif component == "loglama":
                 # LogLama might be configured separately or not included in the main compose file

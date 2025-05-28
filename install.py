@@ -43,21 +43,21 @@ def main():
     if not run_command([sys.executable, "-m", "pip", "install", "-e", "."], cwd=getllm_dir):
         return False
     
-    # Install pylama package
-    pylama_dir = project_root / "pylama"
-    if not pylama_dir.exists():
-        print(f"Error: {pylama_dir} does not exist")
+    # Install devlama package
+    devlama_dir = project_root / "devlama"
+    if not devlama_dir.exists():
+        print(f"Error: {devlama_dir} does not exist")
         return False
     
-    print("\n=== Installing pylama package ===")
-    if not run_command([sys.executable, "-m", "pip", "install", "-e", "."], cwd=pylama_dir):
+    print("\n=== Installing devlama package ===")
+    if not run_command([sys.executable, "-m", "pip", "install", "-e", "."], cwd=devlama_dir):
         return False
     
     print("\n=== Installation completed successfully ===")
     print("You can now use PyLama by running:")
-    print("  pylama -h")
+    print("  devlama -h")
     print("Or in interactive mode:")
-    print("  pylama -i")
+    print("  devlama -i")
     
     return True
 

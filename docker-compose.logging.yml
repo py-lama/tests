@@ -132,14 +132,14 @@ services:
     restart: unless-stopped
 
   # PyLama - Central orchestration service
-  pylama:
+  devlama:
     build:
-      context: ./pylama
+      context: ./devlama
       dockerfile: Dockerfile
     ports:
       - "9003:8003"
     volumes:
-      - ./pylama:/app
+      - ./devlama:/app
       - ./logs:/app/logs
     environment:
       - PYTHONUNBUFFERED=1
@@ -183,7 +183,7 @@ services:
       - LOGLAMA_URL=http://loglama:5001
       - BEXY_API_URL=http://bexy:8000
       - GETLLM_API_URL=http://getllm:8001
-      - PYLAMA_API_URL=http://pylama:8003
+      - DEVLAMA_API_URL=http://devlama:8003
       - SHELLAMA_API_URL=http://shellama:8002
       - MARKDOWN_DIR=/app/markdown
     depends_on:
@@ -195,7 +195,7 @@ services:
         condition: service_started
       shellama:
         condition: service_started
-      pylama:
+      devlama:
         condition: service_started
     networks:
       - lama-network
