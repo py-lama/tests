@@ -26,13 +26,13 @@ services:
       - PORT=8003
       - HOST=0.0.0.0
       - BEXY_API_URL=http://bexy:8000
-      - PYLLM_API_URL=http://pyllm:8001
+      - GETLLM_API_URL=http://getllm:8001
       - SHELLAMA_API_URL=http://apilama:8080/api/shellama
       - OLLAMA_API_URL=http://ollama:11434
     depends_on:
       - ollama
       - bexy
-      - pyllm
+      - getllm
       - apilama
     networks:
       - lama-network
@@ -53,13 +53,13 @@ services:
       - PORT=8080
       - HOST=0.0.0.0
       - BEXY_API_URL=http://bexy:8000
-      - PYLLM_API_URL=http://pyllm:8001
+      - GETLLM_API_URL=http://getllm:8001
       - PYLAMA_API_URL=http://pylama:8003
       - SHELLAMA_API_URL=http://shellama:8002
       - MARKDOWN_DIR=/app/markdown
     depends_on:
       - bexy
-      - pyllm
+      - getllm
       - shellama
     networks:
       - lama-network
@@ -100,14 +100,14 @@ services:
       - lama-network
     restart: unless-stopped
 
-  pyllm:
+  getllm:
     build:
-      context: ./pyllm
+      context: ./getllm
       dockerfile: Dockerfile
     ports:
       - "9001:8001"
     volumes:
-      - ./pyllm:/app
+      - ./getllm:/app
     environment:
       - PYTHONUNBUFFERED=1
       - PORT=8001

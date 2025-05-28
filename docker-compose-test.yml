@@ -60,10 +60,10 @@ services:
     restart: unless-stopped
 
   # PyLLM - LLM Operations service
-  pyllm:
+  getllm:
     build:
       context: .
-      dockerfile: docker/Dockerfile.pyllm
+      dockerfile: docker/Dockerfile.getllm
     ports:
       - "9001:8001"
     volumes:
@@ -117,7 +117,7 @@ services:
       - LOG_LEVEL=DEBUG
       - LOGLAMA_URL=http://loglama:5001
       - BEXY_API_URL=http://bexy:8000
-      - PYLLM_API_URL=http://pyllm:8001
+      - GETLLM_API_URL=http://getllm:8001
       - SHELLAMA_API_URL=http://shellama:8002
       - OLLAMA_API_URL=http://ollama:11434
     depends_on:
@@ -125,7 +125,7 @@ services:
         condition: service_healthy
       bexy:
         condition: service_started
-      pyllm:
+      getllm:
         condition: service_started
       shellama:
         condition: service_started
@@ -148,7 +148,7 @@ services:
       - LOG_LEVEL=DEBUG
       - LOGLAMA_URL=http://loglama:5001
       - BEXY_API_URL=http://bexy:8000
-      - PYLLM_API_URL=http://pyllm:8001
+      - GETLLM_API_URL=http://getllm:8001
       - PYLAMA_API_URL=http://pylama:8003
       - SHELLAMA_API_URL=http://shellama:8002
       - MARKDOWN_DIR=/app/markdown
@@ -157,7 +157,7 @@ services:
         condition: service_healthy
       bexy:
         condition: service_started
-      pyllm:
+      getllm:
         condition: service_started
       shellama:
         condition: service_started

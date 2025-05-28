@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Components to test
 COMPONENTS = {
     "bexy": {"port": 9000, "endpoint": "/health"},
-    "pyllm": {"port": 9001, "endpoint": "/health"},
+    "getllm": {"port": 9001, "endpoint": "/health"},
     "devlama": {"port": 9003, "endpoint": "/health"},  # Renamed from pylama
     "shellama": {"port": 9002, "endpoint": "/health"},
     "apilama": {"port": 9080, "endpoint": "/health"},

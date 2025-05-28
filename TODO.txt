@@ -4,4 +4,4 @@ przed startem we wszystkich projektach python uzyj: pip install -e .
 
 
 projekt pylama powinien pozwalac na uruchomienie calego ekosystemu, wszystkich projektow jako uslugi, tak jak w /home/tom/github/py-lama/docker-compose.yml
-np.: pylama --weblama --apilama --pylama --bexy --pyllm --shellama
+np.: pylama --weblama --apilama --pylama --bexy --getllm --shellama

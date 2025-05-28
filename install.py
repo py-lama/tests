@@ -33,14 +33,14 @@ def main():
     if not run_command([sys.executable, "-m", "pip", "install", "-e", "."], cwd=bexy_dir):
         return False
     
-    # Install pyllm package
-    pyllm_dir = project_root / "pyllm"
-    if not pyllm_dir.exists():
-        print(f"Error: {pyllm_dir} does not exist")
+    # Install getllm package
+    getllm_dir = project_root / "getllm"
+    if not getllm_dir.exists():
+        print(f"Error: {getllm_dir} does not exist")
         return False
     
-    print("\n=== Installing pyllm package ===")
-    if not run_command([sys.executable, "-m", "pip", "install", "-e", "."], cwd=pyllm_dir):
+    print("\n=== Installing getllm package ===")
+    if not run_command([sys.executable, "-m", "pip", "install", "-e", "."], cwd=getllm_dir):
         return False
     
     # Install pylama package

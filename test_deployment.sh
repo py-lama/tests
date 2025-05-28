@@ -28,8 +28,8 @@ fi
 
 # Test PyLLM API
 echo "\nTesting PyLLM API..."
-PYLLM_HEALTH=$(curl -s http://localhost:8001/health)
-if [[ $PYLLM_HEALTH == *"healthy"* ]]; then
+GETLLM_HEALTH=$(curl -s http://localhost:8001/health)
+if [[ $GETLLM_HEALTH == *"healthy"* ]]; then
   echo "✅ PyLLM API is running"
 else
   echo "❌ PyLLM API is not responding correctly"

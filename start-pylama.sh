@@ -8,7 +8,7 @@ PYLAMA_PORT=7003
 APILAMA_PORT=7080
 SHELLAMA_PORT=7002
 BEXY_PORT=7000
-PYLLM_PORT=7001
+GETLLM_PORT=7001
 WEBLAMA_PORT=6081
 
 # Set default host
@@ -146,7 +146,7 @@ stop_service() {
 stop_all() {
   echo -e "${BLUE}Stopping all services...${NC}"
   stop_service "bexy"
-  stop_service "pyllm"
+  stop_service "getllm"
   stop_service "shellama"
   stop_service "apilama"
   stop_service "pylama"
@@ -189,7 +189,7 @@ case "$1" in
     
     # Install dependencies for all services first
     echo -e "${BLUE}Installing dependencies for all services...${NC}"
-    for service in bexy pyllm shellama apilama pylama; do
+    for service in bexy getllm shellama apilama pylama; do
       install_dependencies "$service" "$service"
     done
     
@@ -212,12 +212,12 @@ case "$1" in
     sleep 2
     
     # PyLLM
-    if check_venv "pyllm"; then
-      venv_path=$(get_venv_path "pyllm")
-      start_service "pyllm" "pyllm" "$PYLLM_PORT" ". $venv_path/bin/activate && python -m pyllm.app --port $PYLLM_PORT --host $HOST"
+    if check_venv "getllm"; then
+      venv_path=$(get_venv_path "getllm")
+      start_service "getllm" "getllm" "$GETLLM_PORT" ". $venv_path/bin/activate && python -m getllm.app --port $GETLLM_PORT --host $HOST"
     else
       echo -e "${YELLOW}Warning: PyLLM virtual environment not found. Using system Python.${NC}"
-      start_service "pyllm" "pyllm" "$PYLLM_PORT" "python -m pyllm.app --port $PYLLM_PORT --host $HOST 2>/dev/null || python3 -m pyllm.app --port $PYLLM_PORT --host $HOST 2>/dev/null || echo 'Failed to start PyLLM'"
+      start_service "getllm" "getllm" "$GETLLM_PORT" "python -m getllm.app --port $GETLLM_PORT --host $HOST 2>/dev/null || python3 -m getllm.app --port $GETLLM_PORT --host $HOST 2>/dev/null || echo 'Failed to start PyLLM'"
     fi
     sleep 2
     
@@ -284,7 +284,7 @@ case "$1" in
     
   status)
     echo -e "${BLUE}PyLama Ecosystem Status:${NC}"
-    for service in bexy pyllm shellama apilama pylama weblama; do
+    for service in bexy getllm shellama apilama pylama weblama; do
       if [ -f "logs/$service.pid" ]; then
         pid=$(cat "logs/$service.pid")
         if kill -0 "$pid" 2>/dev/null; then
@@ -308,7 +308,7 @@ case "$1" in
     service=$2
     if [ -z "$service" ]; then
       echo -e "${YELLOW}Usage: $0 logs [service]${NC}"
-      echo -e "${BLUE}Available services: bexy, pyllm, shellama, apilama, pylama, weblama${NC}"
+      echo -e "${BLUE}Available services: bexy, getllm, shellama, apilama, pylama, weblama${NC}"
       exit 1
     fi
     
@@ -348,7 +348,7 @@ case "$1" in
     echo -e "${BLUE}Setting up PyLama ecosystem...${NC}"
     
     # Create virtual environments for each service
-    for service in bexy pyllm shellama apilama pylama; do
+    for service in bexy getllm shellama apilama pylama; do
       echo -e "${BLUE}Setting up $service...${NC}"
       if [ -d "$service" ]; then
         cd "$service" || continue

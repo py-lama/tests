@@ -266,7 +266,7 @@ For development purposes, you can set up each component individually.
 
    #### PyLLM (LLM Operations)
    ```bash
-   cd pyllm
+   cd getllm
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -e .
@@ -319,9 +319,9 @@ If you prefer to start each service manually, follow these steps in order:
 
 2. **PyLLM** (LLM Operations):
    ```bash
-   cd pyllm
+   cd getllm
    source venv/bin/activate  # On Windows: venv\Scripts\activate
-   python -m pyllm.app --port 8001 --host 127.0.0.1
+   python -m getllm.app --port 8001 --host 127.0.0.1
    ```
 
 3. **SheLLama** (Shell Operations):
@@ -388,8 +388,8 @@ POST /api/bexy/execute
 
 #### PyLLM Endpoints
 ```
-GET /api/pyllm/health
-POST /api/pyllm/generate
+GET /api/getllm/health
+POST /api/getllm/generate
 ```
 
 #### SheLLama Endpoints

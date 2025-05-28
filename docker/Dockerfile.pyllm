@@ -12,17 +12,17 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir -p /app/logs
 
 # Copy the PyLLM package
-COPY pyllm /app/pyllm
+COPY getllm /app/getllm
 
 # Copy the fixed API file
-COPY docker/pyllm_api_fix.py /app/pyllm/pyllm/api.py
+COPY docker/getllm_api_fix.py /app/getllm/getllm/api.py
 
 # Install dependencies
-RUN pip install --no-cache-dir -r pyllm/requirements.txt
+RUN pip install --no-cache-dir -r getllm/requirements.txt
 RUN pip install --no-cache-dir fastapi uvicorn
 
 # Install the package in development mode
-WORKDIR /app/pyllm
+WORKDIR /app/getllm
 RUN pip install -e .
 WORKDIR /app
 
@@ -34,4 +34,4 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8001/health || exit 1
 
 # Command to run the API server
-CMD ["python", "-m", "pyllm.pyllm.api", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["python", "-m", "getllm.getllm.api", "--host", "0.0.0.0", "--port", "8001"]

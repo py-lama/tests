@@ -6,28 +6,28 @@ HOST ?= 127.0.0.1
 
 # Port assignments for each service
 BEXY_PORT ?= 8000
-PYLLM_PORT ?= 8001
+GETLLM_PORT ?= 8001
 SHELLAMA_PORT ?= 8002
 PYLAMA_PORT ?= 8003
 APILAMA_PORT ?= 8080
 WEBLAMA_PORT ?= 80
 
-.PHONY: all setup clean test lint format docker-build docker-up docker-down run-bexy run-pyllm run-pylama run-apilama run-shellama run-weblama run-all monitor help docker-test docker-test-bexy docker-test-pyllm docker-test-apilama docker-test-weblama docker-test-pylama docker-integration-test
+.PHONY: all setup clean test lint format docker-build docker-up docker-down run-bexy run-getllm run-pylama run-apilama run-shellama run-weblama run-all monitor help docker-test docker-test-bexy docker-test-getllm docker-test-apilama docker-test-weblama docker-test-pylama docker-integration-test
 
 # Default target
 all: help
 
 # Setup all projects
-setup: setup-bexy setup-pyllm setup-pylama setup-apilama setup-shellama setup-weblama
+setup: setup-bexy setup-getllm setup-pylama setup-apilama setup-shellama setup-weblama
 
 # Setup individual projects with virtual environments
 setup-bexy:
 	@echo "Setting up BEXY..."
 	cd bexy && python -m venv venv && . venv/bin/activate && pip install -e .
 
-setup-pyllm:
+setup-getllm:
 	@echo "Setting up PyLLM..."
-	cd pyllm && python -m venv venv && . venv/bin/activate && pip install -e .
+	cd getllm && python -m venv venv && . venv/bin/activate && pip install -e .
 
 setup-pylama:
 	@echo "Setting up PyLama (Central Orchestration Service)..."
@@ -46,7 +46,7 @@ setup-weblama:
 	cd weblama && npm install
 
 # Clean all projects
-clean: clean-bexy clean-pyllm clean-pylama clean-apilama clean-shellama clean-weblama
+clean: clean-bexy clean-getllm clean-pylama clean-apilama clean-shellama clean-weblama
 	@echo "Cleaning up Docker resources..."
 	docker-compose down -v
 	@echo "Removing logs..."
@@ -60,11 +60,11 @@ clean-bexy:
 	find bexy -type d -name .pytest_cache -exec rm -rf {} +
 
 
-clean-pyllm:
+clean-getllm:
 	@echo "Cleaning PyLLM..."
-	find pyllm -type d -name __pycache__ -exec rm -rf {} +
-	find pyllm -type d -name *.egg-info -exec rm -rf {} +
-	find pyllm -type d -name .pytest_cache -exec rm -rf {} +
+	find getllm -type d -name __pycache__ -exec rm -rf {} +
+	find getllm -type d -name *.egg-info -exec rm -rf {} +
+	find getllm -type d -name .pytest_cache -exec rm -rf {} +
 
 clean-pylama:
 	@echo "Cleaning PyLama..."
@@ -95,16 +95,16 @@ clean-shellama:
 	find shellama -type d -name venv -exec rm -rf {} +
 
 # Run tests for all projects
-test: test-bexy test-pyllm test-pylama test-apilama test-shellama test-weblama
+test: test-bexy test-getllm test-pylama test-apilama test-shellama test-weblama
 
 # Test individual projects
 test-bexy:
 	@echo "Testing BEXY..."
 	cd bexy && python -m pytest tests/
 
-test-pyllm:
+test-getllm:
 	@echo "Testing PyLLM..."
-	cd pyllm && python -m pytest tests/
+	cd getllm && python -m pytest tests/
 
 test-pylama:
 	@echo "Testing PyLama..."
@@ -123,16 +123,16 @@ test-shellama:
 	cd shellama && . venv/bin/activate && python -m unittest discover
 
 # Lint all projects
-lint: lint-bexy lint-pyllm lint-pylama lint-apilama lint-shellama lint-weblama
+lint: lint-bexy lint-getllm lint-pylama lint-apilama lint-shellama lint-weblama
 
 # Lint individual projects
 lint-bexy:
 	@echo "Linting BEXY..."
 	flake8 bexy
 
-lint-pyllm:
+lint-getllm:
 	@echo "Linting PyLLM..."
-	flake8 pyllm
+	flake8 getllm
 
 lint-pylama:
 	@echo "Linting PyLama..."
@@ -143,16 +143,16 @@ lint-weblama:
 	flake8 weblama
 
 # Format all projects
-format: format-bexy format-pyllm format-pylama format-weblama
+format: format-bexy format-getllm format-pylama format-weblama
 
 # Format individual projects
 format-bexy:
 	@echo "Formatting BEXY..."
 	black bexy
 
-format-pyllm:
+format-getllm:
 	@echo "Formatting PyLLM..."
-	black pyllm
+	black getllm
 
 format-pylama:
 	@echo "Formatting PyLama..."
@@ -176,16 +176,16 @@ docker-down:
 	docker-compose down
 
 # Docker testing commands
-docker-test: docker-test-bexy docker-test-pyllm docker-test-apilama docker-test-weblama docker-test-pylama
+docker-test: docker-test-bexy docker-test-getllm docker-test-apilama docker-test-weblama docker-test-pylama
 	@echo "All Docker tests completed."
 
 docker-test-bexy:
 	@echo "Running BEXY tests in Docker..."
 	cd bexy && make docker-test
 
-docker-test-pyllm:
+docker-test-getllm:
 	@echo "Running PyLLM tests in Docker..."
-	cd pyllm && make docker-test
+	cd getllm && make docker-test
 
 docker-test-apilama:
 	@echo "Running APILama tests in Docker..."
@@ -208,9 +208,9 @@ run-bexy:
 	@echo "Running BEXY on port $(BEXY_PORT)..."
 	cd bexy && . venv/bin/activate && python -m bexy.app --port $(BEXY_PORT) --host $(HOST)
 
-run-pyllm:
-	@echo "Running PyLLM on port $(PYLLM_PORT)..."
-	cd pyllm && . venv/bin/activate && python -m pyllm.app --port $(PYLLM_PORT) --host $(HOST)
+run-getllm:
+	@echo "Running PyLLM on port $(GETLLM_PORT)..."
+	cd getllm && . venv/bin/activate && python -m getllm.app --port $(GETLLM_PORT) --host $(HOST)
 
 run-shellama:
 	@echo "Running SheLLama on port $(SHELLAMA_PORT)..."
@@ -235,8 +235,8 @@ run-all:
 	# Start services in the correct dependency order with PyLama as the central orchestration point
 	@echo "Starting BEXY (Sandbox) on port $(BEXY_PORT)..."
 	cd bexy && . venv/bin/activate && python -m bexy.app --port $(BEXY_PORT) --host $(HOST) > ../logs/bexy.log 2>&1 &
-	@echo "Starting PyLLM (LLM Operations) on port $(PYLLM_PORT)..."
-	cd pyllm && . venv/bin/activate && python -m pyllm.app --port $(PYLLM_PORT) --host $(HOST) > ../logs/pyllm.log 2>&1 &
+	@echo "Starting PyLLM (LLM Operations) on port $(GETLLM_PORT)..."
+	cd getllm && . venv/bin/activate && python -m getllm.app --port $(GETLLM_PORT) --host $(HOST) > ../logs/getllm.log 2>&1 &
 	@echo "Starting SheLLama (Shell Operations) on port $(SHELLAMA_PORT)..."
 	cd shellama && . venv/bin/activate && python -m shellama.app --port $(SHELLAMA_PORT) --host $(HOST) > ../logs/shellama.log 2>&1 &
 	@echo "Starting APILama (API Gateway) on port $(APILAMA_PORT)..."
@@ -276,7 +276,7 @@ help:
 	@echo "Docker testing commands:"
 	@echo "  docker-test  - Run tests for all components in Docker"
 	@echo "  docker-test-bexy   - Run BEXY tests in Docker"
-	@echo "  docker-test-pyllm   - Run PyLLM tests in Docker"
+	@echo "  docker-test-getllm   - Run PyLLM tests in Docker"
 	@echo "  docker-test-apilama - Run APILama tests in Docker"
 	@echo "  docker-test-weblama - Run WebLama tests in Docker"
 	@echo "  docker-test-pylama  - Run PyLama tests in Docker"
@@ -287,7 +287,7 @@ help:
 	@echo "  run-apilama - Run APILama (API Gateway) on port $(APILAMA_PORT)"
 	@echo "  run-shellama - Run SheLLama (Shell Operations) on port $(SHELLAMA_PORT)"
 	@echo "  run-bexy   - Run BEXY (Sandbox) on port $(BEXY_PORT)"
-	@echo "  run-pyllm   - Run PyLLM (LLM Operations) on port $(PYLLM_PORT)"
+	@echo "  run-getllm   - Run PyLLM (LLM Operations) on port $(GETLLM_PORT)"
 	@echo "  run-weblama - Run WebLama (Frontend) on port $(WEBLAMA_PORT)"
 	@echo ""
 	@echo "Combined operations:"
@@ -296,5 +296,5 @@ help:
 	@echo "  deploy      - Deploy the entire system using Docker (recommended)"
 	@echo "  help        - Show this help message"
 	@echo ""
-	@echo "Individual project targets are also available with -bexy, -pyllm, -pylama, -apilama, -shellama, or -weblama suffixes"
+	@echo "Individual project targets are also available with -bexy, -getllm, -pylama, -apilama, -shellama, or -weblama suffixes"
 	@echo "Example: make setup-bexy"
