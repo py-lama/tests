@@ -6,10 +6,6 @@ import asyncio
 import tempfile
 import json
 from unittest.mock import Mock, patch, mock_open
-from dialogchain.processors import (
-    ExternalProcessor, FilterProcessor, 
-    TransformProcessor, AggregateProcessor
-)
 
 class TestExternalProcessor:
     

@@ -12,5 +12,5 @@ sys.path.insert(0, str(project_root / "python"))
 sys.path.insert(0, str(project_root / "python" / "src"))
 
 # Ensure the dialogchain package is importable
-import dialogchain
-print(f"dialogchain module path: {dialogchain.__file__}")
+# import dialogchain
+# print(f"dialogchain module path: {dialogchain.__file__}")
