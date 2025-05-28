@@ -27,7 +27,7 @@ BLUE := \033[0;34m
 RED := \033[0;31m
 NC := \033[0m # No Color
 
-.PHONY: all setup clean test lint format run-all run-loglama run-collector run-bexy run-getllm run-devlama run-apilama run-shellama run-weblama stop-all stop status help
+.PHONY: all setup clean test test-makefiles test-makefiles-docker test-github-actions validate-github-actions lint format run-all run-loglama run-collector run-bexy run-getllm run-devlama run-apilama run-shellama run-weblama stop-all stop status help
 
 # Default target
 all: help
@@ -194,6 +194,41 @@ status:
 	@echo "$(GREEN)APILama: http://$(HOST):$(APILAMA_PORT)$(NC)"
 	@echo "$(GREEN)WebLama: http://$(HOST):$(WEBLAMA_PORT)$(NC)"
 
+# Test all Makefiles in all projects
+test-makefiles:
+	@echo "$(BLUE)Testing all Makefiles in all projects...$(NC)"
+	@cd $(ROOT_DIR) && ./test_all_makefiles.sh
+
+# Test all Makefiles with verbose output
+test-makefiles-verbose:
+	@echo "$(BLUE)Testing all Makefiles in all projects with verbose output...$(NC)"
+	@cd $(ROOT_DIR) && ./test_all_makefiles.sh --verbose
+
+# Test all Makefiles in Docker containers
+test-makefiles-docker:
+	@echo "$(BLUE)Testing all Makefiles in Docker containers...$(NC)"
+	@cd $(ROOT_DIR) && ./docker_test_makefiles.sh
+
+# Test GitHub Actions workflows locally
+test-github-actions:
+	@echo "$(BLUE)Testing GitHub Actions workflows locally...$(NC)"
+	@cd $(ROOT_DIR) && ./tests/test_github_actions.sh
+
+# Validate GitHub Actions workflow files
+validate-github-actions:
+	@echo "$(BLUE)Validating GitHub Actions workflow files...$(NC)"
+	@cd $(ROOT_DIR) && ./tests/validate_github_workflows.sh
+
+# Fix GitHub Actions workflow files
+fix-github-actions:
+	@echo "$(BLUE)Fixing GitHub Actions workflow files...$(NC)"
+	@cd $(ROOT_DIR) && ./tests/validate_github_workflows.sh --fix
+
+# Run comprehensive tests for all projects
+test-all: test-makefiles test-github-actions
+	@echo "$(BLUE)Running comprehensive tests for all projects...$(NC)"
+	@cd $(ROOT_DIR) && ./tests/run_all_tests.sh
+
 # Clean all projects
 clean: stop-all
 	@echo "$(BLUE)Cleaning up all projects...$(NC)"
@@ -212,12 +247,21 @@ help:
 	@echo "$(YELLOW)Setup Commands:$(NC)"
 	@echo "  setup            - Set up all projects with virtual environments"
 	@echo "  setup-loglama    - Set up LogLama only"
-	@echo "  setup-bexy      - Set up BEXY only"
-	@echo "  setup-getllm      - Set up PyLLM only"
-	@echo "  setup-devlama     - Set up PyLama only"
+	@echo "  setup-bexy       - Set up BEXY only"
+	@echo "  setup-getllm     - Set up PyLLM only"
+	@echo "  setup-devlama    - Set up PyLama only"
 	@echo "  setup-apilama    - Set up APILama only"
 	@echo "  setup-shellama   - Set up SheLLama only"
 	@echo "  setup-weblama    - Set up WebLama only"
+	@echo ""
+	@echo "$(YELLOW)Testing Commands:$(NC)"
+	@echo "  test-all              - Run comprehensive tests for all projects"
+	@echo "  test-makefiles        - Test all Makefiles in all projects"
+	@echo "  test-makefiles-verbose - Test all Makefiles with verbose output"
+	@echo "  test-makefiles-docker - Test all Makefiles in Docker containers"
+	@echo "  test-github-actions   - Test GitHub Actions workflows locally"
+	@echo "  validate-github-actions - Validate GitHub Actions workflow files"
+	@echo "  fix-github-actions    - Fix common issues in GitHub Actions workflows"
 	@echo ""
 	@echo "$(YELLOW)Run Commands:$(NC)"
 	@echo "  run-all          - Run all services in the correct order with LogLama first"
@@ -244,5 +288,7 @@ help:
 	@echo "  make run-all                      - Run all services with default ports"
 	@echo "  make run-all LOGLAMA_PORT=5002    - Run all services with LogLama on port 5002"
 	@echo "  make run-loglama run-weblama      - Run only LogLama and WebLama"
+	@echo "  make test-makefiles               - Test all Makefiles in all projects"
+	@echo "  make test-github-actions          - Test GitHub Actions workflows locally"
 	@echo "  make status                       - Check which services are running"
 	@echo "  make stop-all                     - Stop all running services"
